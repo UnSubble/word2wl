@@ -12,6 +12,10 @@ import (
 	"github.com/unsubble/word2wl/wordgen"
 )
 
+const PROJECT_NAME = "word2wl"
+const VERSION = "1.0.1"
+const THRESHOLD = 10 * 1024 * 1024 // 10MB threshold
+
 func initCobra() *cobra.Command {
 	var (
 		datasetPath    string
@@ -27,9 +31,11 @@ func initCobra() *cobra.Command {
 	)
 
 	rootCmd := &cobra.Command{
-		Use:   "word2wl",
-		Short: "Wordlist Generator: Create word variations based on a dataset and keyword.",
+		Use:     PROJECT_NAME,
+		Short:   "Wordlist Generator: Create word variations based on a dataset and keyword.",
+		Version: VERSION,
 		RunE: func(cmd *cobra.Command, args []string) error {
+
 			if datasetPath == "" || keyword == "" {
 				return fmt.Errorf("dataset and keyword are required")
 			}
@@ -64,7 +70,7 @@ func initCobra() *cobra.Command {
 					return fmt.Errorf("failed to stat output file: %v", err)
 				}
 
-				if fileInfo.Size() > 10*1024*1024 { // 10MB threshold
+				if fileInfo.Size() > THRESHOLD {
 					if verbose {
 						fmt.Println("Output file exceeds 10MB. Compressing to .gz format.")
 					}
@@ -182,13 +188,15 @@ func initCobra() *cobra.Command {
 	rootCmd.Flags().StringVarP(&datasetPath, "dataset", "d", "", "Path to the dataset file (e.g., rockyou.txt)")
 	rootCmd.Flags().StringVarP(&keyword, "keyword", "k", "", "Keyword to inject into the dataset")
 	rootCmd.Flags().IntVarP(&level, "level", "l", 1, "Mutation power level (1 = basic, 5 = advanced)")
-	rootCmd.Flags().IntVarP(&threads, "threads", "t", 4, "Number of concurrent threads (default: 4)")
-	rootCmd.Flags().IntVarP(&batchSize, "batch-size", "b", 100, "Number of words per batch (default: 100)")
+	rootCmd.Flags().IntVarP(&threads, "threads", "t", 4, "Number of concurrent threads")
+	rootCmd.Flags().IntVarP(&batchSize, "batch-size", "b", 100, "Number of words per batch")
 	rootCmd.Flags().StringVarP(&outputFile, "output-file", "o", "", "Output file path (default: stdout)")
 	rootCmd.Flags().BoolVarP(&recursive, "recursive", "r", false, "Recursively mutate generated words")
 	rootCmd.Flags().IntVarP(&recursiveLevel, "recursive-level", "R", 0, "Number of recursive mutation cycles (default: same as --level)")
 	rootCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose output")
 	rootCmd.Flags().StringVarP(&specialChars, "special", "s", "", "Special characters that should be reserved and tokenized separately")
+	rootCmd.Flags().BoolP("version", "V", false, "Show version")
+	rootCmd.Flags().BoolP("help", "h", false, "Help for word2wl")
 
 	return rootCmd
 }

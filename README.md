@@ -38,6 +38,8 @@ To generate a wordlist from a dataset with a given keyword:
 - `-l, --level` (Optional): Mutation power level (1 = basic, 5 = advanced).
     
 - `-t, --threads` (Optional): Number of concurrent threads (default: 4).
+
+- `-h, --help` (Optional): Help for word2wl.
     
 - `-b, --batch-size` (Optional): Number of words per batch (default: 100).
     
@@ -50,6 +52,8 @@ To generate a wordlist from a dataset with a given keyword:
 - `-v, --verbose` (Optional): Enable verbose output.
     
 - `-s, --special` (Optional): Special characters that should be reserved and tokenized separately.
+
+- `-V, --version` (Optional): Show version.
     
 
 ### Example:

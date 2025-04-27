@@ -1,6 +1,10 @@
 package wordgen
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/unsubble/word2wl/wordgen/mutators"
+)
 
 type MutatorFunc func(word string) (string, error)
 
@@ -24,65 +28,65 @@ func GetMutators(level int) []MutatorFunc {
 	switch level {
 	case 1:
 		return []MutatorFunc{
-			Capitalize,
-			ToUpper,
-			ToLower,
+			mutators.Capitalize,
+			mutators.ToUpper,
+			mutators.ToLower,
 		}
 	case 2:
 		return []MutatorFunc{
-			Capitalize,
-			ToUpper,
-			ToLower,
-			ReverseWord,
-			LeetSpeak,
+			mutators.Capitalize,
+			mutators.ToUpper,
+			mutators.ToLower,
+			mutators.ReverseWord,
+			mutators.LeetSpeak,
 		}
 	case 3:
 		return []MutatorFunc{
-			Capitalize,
-			ToUpper,
-			ToLower,
-			ReverseWord,
-			LeetSpeak,
-			RandomCase,
-			DuplicateWord,
-			AddRandomNumber,
+			mutators.Capitalize,
+			mutators.ToUpper,
+			mutators.ToLower,
+			mutators.ReverseWord,
+			mutators.LeetSpeak,
+			mutators.RandomCase,
+			mutators.DuplicateWord,
+			mutators.AddRandomNumber,
 		}
 	case 4:
 		return []MutatorFunc{
-			Capitalize,
-			ToUpper,
-			ToLower,
-			ReverseWord,
-			LeetSpeak,
-			RandomCase,
-			DuplicateWord,
-			AddRandomNumber,
-			ShuffleLetters,
-			InsertRandomSymbol,
-			StretchWord,
+			mutators.Capitalize,
+			mutators.ToUpper,
+			mutators.ToLower,
+			mutators.ReverseWord,
+			mutators.LeetSpeak,
+			mutators.RandomCase,
+			mutators.DuplicateWord,
+			mutators.AddRandomNumber,
+			mutators.ShuffleLetters,
+			mutators.InsertRandomSymbol,
+			mutators.StretchWord,
 		}
 	case 5:
 		return []MutatorFunc{
-			Capitalize,
-			ToUpper,
-			ToLower,
-			ReverseWord,
-			LeetSpeak,
-			RandomCase,
-			DuplicateWord,
-			AddRandomNumber,
-			ShuffleLetters,
-			InsertRandomSymbol,
-			StretchWord,
-			AlternateCase,
-			RemoveVowels,
-			MemeCase,
+			mutators.Capitalize,
+			mutators.ToUpper,
+			mutators.ToLower,
+			mutators.ReverseWord,
+			mutators.LeetSpeak,
+			mutators.RandomCase,
+			mutators.DuplicateWord,
+			mutators.AddRandomNumber,
+			mutators.ShuffleLetters,
+			mutators.InsertRandomSymbol,
+			mutators.StretchWord,
+			mutators.AlternateCase,
+			mutators.RemoveVowels,
+			mutators.MemeCase,
 		}
 	default:
 		return []MutatorFunc{
-			Capitalize,
-			ToUpper,
-			ToLower,
+			mutators.Capitalize,
+			mutators.ToUpper,
+			mutators.ToLower,
 		}
 	}
 }

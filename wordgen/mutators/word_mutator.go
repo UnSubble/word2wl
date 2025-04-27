@@ -1,4 +1,4 @@
-package wordgen
+package mutators
 
 import (
 	"fmt"
