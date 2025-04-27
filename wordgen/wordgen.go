@@ -3,15 +3,14 @@ package wordgen
 import (
 	"fmt"
 
-	"github.com/unsubble/word2wl/wordgen/mutators"
+	"github.com/unsubble/word2wl/wordgen/common"
+	"github.com/unsubble/word2wl/wordgen/mutator"
 )
-
-type MutatorFunc func(word string) (string, error)
 
 type WordGenerator struct {
 	Dataset       []string
 	Keyword       string
-	Mutators      []MutatorFunc
+	mutator       []common.WordMutatorFunc
 	ReservedChars map[rune]struct{}
 }
 
@@ -19,74 +18,74 @@ func NewWordGenerator(dataset []string, keyword string, power int, reservedChars
 	return &WordGenerator{
 		Dataset:       dataset,
 		Keyword:       keyword,
-		Mutators:      GetMutators(power),
+		mutator:       getMutatorForWordGenerator(power),
 		ReservedChars: reservedChars,
 	}
 }
 
-func GetMutators(level int) []MutatorFunc {
+func getMutatorForWordGenerator(level int) []common.WordMutatorFunc {
 	switch level {
 	case 1:
-		return []MutatorFunc{
-			mutators.Capitalize,
-			mutators.ToUpper,
-			mutators.ToLower,
+		return []common.WordMutatorFunc{
+			mutator.Capitalize,
+			mutator.ToUpper,
+			mutator.ToLower,
 		}
 	case 2:
-		return []MutatorFunc{
-			mutators.Capitalize,
-			mutators.ToUpper,
-			mutators.ToLower,
-			mutators.ReverseWord,
-			mutators.LeetSpeak,
+		return []common.WordMutatorFunc{
+			mutator.Capitalize,
+			mutator.ToUpper,
+			mutator.ToLower,
+			mutator.ReverseWord,
+			mutator.LeetSpeak,
 		}
 	case 3:
-		return []MutatorFunc{
-			mutators.Capitalize,
-			mutators.ToUpper,
-			mutators.ToLower,
-			mutators.ReverseWord,
-			mutators.LeetSpeak,
-			mutators.RandomCase,
-			mutators.DuplicateWord,
-			mutators.AddRandomNumber,
+		return []common.WordMutatorFunc{
+			mutator.Capitalize,
+			mutator.ToUpper,
+			mutator.ToLower,
+			mutator.ReverseWord,
+			mutator.LeetSpeak,
+			mutator.RandomCase,
+			mutator.DuplicateWord,
+			mutator.AddRandomNumber,
 		}
 	case 4:
-		return []MutatorFunc{
-			mutators.Capitalize,
-			mutators.ToUpper,
-			mutators.ToLower,
-			mutators.ReverseWord,
-			mutators.LeetSpeak,
-			mutators.RandomCase,
-			mutators.DuplicateWord,
-			mutators.AddRandomNumber,
-			mutators.ShuffleLetters,
-			mutators.InsertRandomSymbol,
-			mutators.StretchWord,
+		return []common.WordMutatorFunc{
+			mutator.Capitalize,
+			mutator.ToUpper,
+			mutator.ToLower,
+			mutator.ReverseWord,
+			mutator.LeetSpeak,
+			mutator.RandomCase,
+			mutator.DuplicateWord,
+			mutator.AddRandomNumber,
+			mutator.ShuffleLetters,
+			mutator.InsertRandomSymbol,
+			mutator.StretchWord,
 		}
 	case 5:
-		return []MutatorFunc{
-			mutators.Capitalize,
-			mutators.ToUpper,
-			mutators.ToLower,
-			mutators.ReverseWord,
-			mutators.LeetSpeak,
-			mutators.RandomCase,
-			mutators.DuplicateWord,
-			mutators.AddRandomNumber,
-			mutators.ShuffleLetters,
-			mutators.InsertRandomSymbol,
-			mutators.StretchWord,
-			mutators.AlternateCase,
-			mutators.RemoveVowels,
-			mutators.MemeCase,
+		return []common.WordMutatorFunc{
+			mutator.Capitalize,
+			mutator.ToUpper,
+			mutator.ToLower,
+			mutator.ReverseWord,
+			mutator.LeetSpeak,
+			mutator.RandomCase,
+			mutator.DuplicateWord,
+			mutator.AddRandomNumber,
+			mutator.ShuffleLetters,
+			mutator.InsertRandomSymbol,
+			mutator.StretchWord,
+			mutator.AlternateCase,
+			mutator.RemoveVowels,
+			mutator.MemeCase,
 		}
 	default:
-		return []MutatorFunc{
-			mutators.Capitalize,
-			mutators.ToUpper,
-			mutators.ToLower,
+		return []common.WordMutatorFunc{
+			mutator.Capitalize,
+			mutator.ToUpper,
+			mutator.ToLower,
 		}
 	}
 }
@@ -95,7 +94,7 @@ func (wg *WordGenerator) Generate() ([]string, error) {
 	var results []string
 
 	for _, word := range wg.Dataset {
-		tokens := Tokenize(word, wg.ReservedChars)
+		tokens := TokenizeWord(word, wg.ReservedChars)
 		pattern := Pattern{Tokens: tokens}
 
 		newWords := pattern.ApplyKeyword(wg.Keyword)
@@ -109,7 +108,7 @@ func (wg *WordGenerator) Generate() ([]string, error) {
 
 	var mutated []string
 	for _, word := range results {
-		for _, m := range wg.Mutators {
+		for _, m := range wg.mutator {
 			if newWord, err := m(word); err == nil && newWord != "" {
 				mutated = append(mutated, newWord)
 			}
@@ -118,7 +117,7 @@ func (wg *WordGenerator) Generate() ([]string, error) {
 
 	allWords := append(results, mutated...)
 
-	finalWords := Unique(allWords)
+	finalWords := common.Unique(allWords)
 
 	return finalWords, nil
 }

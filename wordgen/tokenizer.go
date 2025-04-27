@@ -1,10 +1,12 @@
 package wordgen
 
 import (
+	"os"
+	"strings"
 	"unicode"
 )
 
-func Tokenize(word string, reservedRunes map[rune]struct{}) []TokenNode {
+func TokenizeWord(word string, reservedRunes map[rune]struct{}) []TokenNode {
 	var tokens []TokenNode
 	var currentToken TokenNode
 
@@ -37,6 +39,27 @@ func Tokenize(word string, reservedRunes map[rune]struct{}) []TokenNode {
 	if currentToken.Value != "" {
 		tokens = append(tokens, currentToken)
 	}
+
+	return tokens
+}
+
+func TokenizePath(pathStr string) []TokenNode {
+	var tokens []TokenNode
+	var currentToken TokenNode
+	var start int
+
+	pathStr = strings.TrimRight(pathStr, string(os.PathSeparator))
+
+	for i, c := range pathStr {
+		if os.PathSeparator == c {
+			currentToken = TokenNode{Type: Path, Value: pathStr[start:i]}
+			tokens = append(tokens, currentToken)
+			start = i + 1
+		}
+	}
+
+	currentToken = TokenNode{Type: Path, Value: pathStr[start:]}
+	tokens = append(tokens, currentToken)
 
 	return tokens
 }

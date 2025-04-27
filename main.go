@@ -10,10 +10,11 @@ import (
 	"github.com/schollz/progressbar/v3"
 	"github.com/spf13/cobra"
 	"github.com/unsubble/word2wl/wordgen"
+	"github.com/unsubble/word2wl/wordgen/common"
 )
 
 const PROJECT_NAME = "word2wl"
-const VERSION = "1.0.1"
+const VERSION = "1.0.2"
 const THRESHOLD = 10 * 1024 * 1024 // 10MB threshold
 
 func initCobra() *cobra.Command {
@@ -28,6 +29,7 @@ func initCobra() *cobra.Command {
 		recursiveLevel int
 		verbose        bool
 		specialChars   string
+		generator      string
 	)
 
 	rootCmd := &cobra.Command{
@@ -122,13 +124,21 @@ func initCobra() *cobra.Command {
 					specialCharMap[ch] = struct{}{}
 				}
 
-				for i := 0; i < threads; i++ {
+				for range threads {
 					wg.Add(1)
 					go func() {
 						defer wg.Done()
 						for batch := range wordChan {
-							generator := wordgen.NewWordGenerator(batch, keyword, level, specialCharMap)
-							results, err := generator.Generate()
+							var generatorInstance common.Generator
+							if generator == "word" {
+								generatorInstance = wordgen.NewWordGenerator(batch, keyword, level, specialCharMap)
+							} else if generator == "path" {
+								generatorInstance = wordgen.NewPathGenerator(batch, keyword, level)
+							} else {
+								fmt.Fprintln(os.Stderr, "Unrecognizable generator")
+								os.Exit(1)
+							}
+							results, err := generatorInstance.Generate()
 							if err == nil {
 								resultChan <- results
 							}
@@ -185,6 +195,7 @@ func initCobra() *cobra.Command {
 		},
 	}
 
+	rootCmd.Flags().StringVarP(&generator, "generator", "g", "word", "Generator type ('word' or 'path')")
 	rootCmd.Flags().StringVarP(&datasetPath, "dataset", "d", "", "Path to the dataset file (e.g., rockyou.txt)")
 	rootCmd.Flags().StringVarP(&keyword, "keyword", "k", "", "Keyword to inject into the dataset")
 	rootCmd.Flags().IntVarP(&level, "level", "l", 1, "Mutation power level (1 = basic, 5 = advanced)")

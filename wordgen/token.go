@@ -6,6 +6,7 @@ const (
 	Alpha TokenType = iota
 	Digit
 	Special
+	Path
 	Reserved
 )
 

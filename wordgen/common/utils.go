@@ -1,4 +1,4 @@
-package wordgen
+package common
 
 func Unique(words []string) []string {
 	seen := make(map[string]struct{})

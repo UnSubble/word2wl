@@ -1,4 +1,4 @@
-package mutators
+package mutator
 
 import (
 	"fmt"
