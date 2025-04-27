@@ -39,6 +39,8 @@ To generate a wordlist from a dataset with a given keyword:
     
 - `-t, --threads` (Optional): Number of concurrent threads (default: 4).
 
+- `-g, --generator` (Optional): Select word list generator ('word' or 'path') (default: word).
+
 - `-h, --help` (Optional): Help for word2wl.
     
 - `-b, --batch-size` (Optional): Number of words per batch (default: 100).
