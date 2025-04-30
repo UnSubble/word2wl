@@ -1,66 +1,77 @@
 # Word2WL - Wordlist Generator
 
-Word2WL is a powerful wordlist generator that creates word variations based on a given dataset and keyword. It allows you to mutate words in various ways, useful for tasks like password cracking, security assessments, and generating wordlists for penetration testing.
+Word2WL is a powerful wordlist generator for penetration testers and security professionals. It creates wordlist variations based on a provided dataset and a keyword, allowing deep and recursive mutation of words for use in password attacks and enumeration.
 
-## Features
-
-- Generate wordlist variations by mutating words from a given dataset.
-- Support for multiple mutation levels (from basic to advanced).
-- Ability to use special characters in the mutations.
-- Support for recursive mutation to expand wordlists further.
-- Concurrent processing with configurable threads for faster generation.
-- Output to files, with gzip compression for large outputs.
+At its core, Word2WL supports mutation levels, recursive transformation, and special character injection, offering a high degree of customization. It’s multithreaded and supports gzip compression for efficient handling of large outputs.
 
 ## Installation
 
-You can clone this repository and build the project locally.
+  To build from source:
 
 ```bash
 git clone https://github.com/unsubble/word2wl
+
 cd word2wl
+
 go build -o word2wl .
 ```
-
 ## Usage
-
-### Basic Usage:
-
-To generate a wordlist from a dataset with a given keyword:
-```bash
-./word2wl -d "/path/to/dataset.txt" -k "yourkeyword" -o output.txt
-```
-### Command-line Flags:
-
-- `-d, --dataset` (Required): Path to the dataset file (e.g., rockyou.txt).
-    
-- `-k, --keyword` (Required): Keyword to inject into the dataset.
-    
-- `-l, --level` (Optional): Mutation power level (1 = basic, 5 = advanced).
-    
-- `-t, --threads` (Optional): Number of concurrent threads (default: 4).
-
-- `-g, --generator` (Optional): Select word list generator ('word' or 'path') (default: word).
-
-- `-h, --help` (Optional): Help for word2wl.
-    
-- `-b, --batch-size` (Optional): Number of words per batch (default: 100).
-    
-- `-o, --output-file` (Optional): Output file path (default: stdout).
-    
-- `-r, --recursive` (Optional): Recursively mutate generated words.
-    
-- `-R, --recursive-level` (Optional): Number of recursive mutation cycles (default: same as `--level`).
-    
-- `-v, --verbose` (Optional): Enable verbose output.
-    
-- `-s, --special` (Optional): Special characters that should be reserved and tokenized separately.
-
-- `-V, --version` (Optional): Show version.
-    
-
-### Example:
-```bash
-./word2wl -d "/home/user/rockyou.txt" -k "example" -o output.txt -l 2 -t 8 -v
+``` bash
+./word2wl -h
 ```
 
-This command will generate a wordlist based on the `rockyou.txt` dataset, using the keyword "example" with mutation level 2, and output the results to `output.txt` with 8 threads and verbose output.
+Usage:
+
+```bash
+word2wl [flags]
+```
+  
+
+#### Examples:
+Generate a wordlist from a dataset and a keyword:
+
+```bash
+./word2wl -d "/home/user/rockyou.txt" -k "example" -o output.txt
+```
+
+  
+Use recursive mutation with level 2 and verbose output:
+
+```bash
+./word2wl -d "dataset.txt" -k "admin" -l 2 -r -v -o result.txt
+```
+
+  
+
+## Flags:
+
+Flag Description
+
+__`-d, --dataset (Required)`__ Path to the dataset file (e.g., rockyou.txt)
+
+__`-k, --keyword (Required)`__ Keyword to inject into the dataset
+
+__`-l, --level`__ Mutation power level (default: 1, max: 5)
+
+__`-r, --recursive`__ Enable recursive mutation of generated words
+
+__`-R, --recursive-level`__ Number of recursive cycles (default: same as --level)
+
+__`-t, --threads`__ Number of concurrent threads (default: 4)
+
+__`-b, --batch-size`__ Number of words per batch (default: 100)
+
+__`-o, --output-file`__ Output file path (default: stdout)
+
+__`-g, --generator`__ Select generator type (word or path, default: word)
+
+__`-s, --special`__ Special characters to preserve/tokenize separately
+
+__`-v, --verbose`__ Enable verbose output
+
+__`-V, --version`__ Show version
+
+__`-h, --help`__ Help message for Word2WL
+
+## License
+Word2WL is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
